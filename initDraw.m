@@ -2,7 +2,7 @@
     function initDraw(obstacles)
        global armHandle targetQuatHandle gripperQuatHandle;
 
-       armHandle = plot3(0,0,0, '.-', 'LineWidth', 4, 'MarkerSize', 6) ;
+       armHandle = plot3(0,0,0, '.-', 'LineWidth', 2, 'MarkerSize', 20,'MarkerEdgeColor', 'k') ;
        hold on;
        axis equal;
        xlim([-7 7]);
