@@ -1,0 +1,7 @@
+# matlab temp files
+*~
+
+#cmaes dat files
+*.dat
+#matlab var files
+*.mat
