@@ -1,16 +1,18 @@
 
     function initDraw(obstacles)
-       global armHandle targetQuatHandle gripperQuatHandle;
+       global armHandle targetQuatHandle gripperQuatHandle targetPos targetQuat;
+       global link_length;
+       bounds = sum(link_length);
        clf;
        hold on;
        armHandle = initArmHandle('b');
        axis equal;
-       xlim([-7 7]);
-       ylim([-7 7]);
-       zlim([-7 7]);
-       targetQuatHandle = line(0,0,0,'Color','m');
+       xlim([-bounds bounds]);
+       ylim([-bounds bounds]);
+       zlim([-bounds bounds]);
+       targetQuatHandle = line(0,0,0,'Color','r', 'LineWidth', 3);
        gripperQuatHandle = line(0,0,0,'Color', 'g');
-       
+       drawOrientation(targetQuatHandle, targetPos, targetQuat);
        [sx,sy,sz] = sphere(16);
        for i = 1:size(obstacles,1)
            x = obstacles(i,1);

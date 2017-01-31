@@ -1,5 +1,5 @@
 function drawArm(params, lengths, armHandle)
-        global targetQuatHandle gripperQuatHandle targetPos targetQuat;
+        global gripperQuatHandle;
         frame = eye(4);
         lines = zeros(size(lengths,2)+1, 3);
         for i = 1:size(params,1)
