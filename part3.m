@@ -1,6 +1,6 @@
 function [r,p,y] = part3( target, ll, min_roll, max_roll, min_pitch, max_pitch, min_yaw, max_yaw, o )
     global targetPos targetQuat avgJointLims obstacles link_length;
-    global cmae_disp_it;
+    global cmae_disp_it armHandle;
     cmae_disp_it = 0;
     link_length = ll;
     obstacles = o;
@@ -20,7 +20,7 @@ function [r,p,y] = part3( target, ll, min_roll, max_roll, min_pitch, max_pitch, 
     opts.MaxIter = 500;
     [params, fmin, ceval, stopflag, out, bestever] = cmaes('cmaes_crit', params, pi/2, opts);
     params = reshape(params, numel(params)/3, 3);
-    drawArm(params, link_length);
+    drawArm(params, link_length,armHandle);
     r = params(:,1);
     p = params(:,2);
     y = params(:,3);

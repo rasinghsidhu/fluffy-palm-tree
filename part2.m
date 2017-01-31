@@ -15,7 +15,7 @@ function [r, p, y] = part2( target, ll, min_roll, max_roll, min_pitch, max_pitch
     %    obstacle. M obstacles.
 
 % Your code goes here.
-global targetPos targetQuat avgRoll avgPitch avgYaw obstacles link_length;
+global targetPos targetQuat avgRoll avgPitch avgYaw obstacles link_length armHandle;
     link_length = ll;
     obstacles = o;
     params = randn(size(link_length,2),3);%zeros(size(link_length,2),3);
@@ -31,41 +31,27 @@ global targetPos targetQuat avgRoll avgPitch avgYaw obstacles link_length;
     
     symbolic = sym('p', size(params));
     
-    [pos,frame,pts] = fk(symbolic, link_length);
-    diffVec = pos - targetPos;
-    df1 = gradient(diffVec(1),symbolic(:));
-    df2 = gradient(diffVec(2),symbolic(:))  ;
-    df3 = gradient(diffVec(3),symbolic(:));
-    df4 = gradient(rotquatdist(frame(1:3,1:3),targetQuat),symbolic(:));
-    %d2f1 = hessian(diffVec(1),symbolic(:));
-    %d2f2 = hessian(diffVec(2),symbolic(:));
-    %d2f3 = hessian(diffVec(3),symbolic(:));
-    %d2f4 = hessian(rotquatdist(frame(1:3,1:3),targetQuat),symbolic(:));
+    crit = criterion(symbolic);
+    dcrit = gradient(crit, symbolic(:));
+    %d2crit = hessian(crit, symbolic(:));
     
-    df1 = matlabFunction(df1, 'Vars', {symbolic});
-    df2 = matlabFunction(df2, 'Vars', {symbolic});
-    df3 = matlabFunction(df3, 'Vars', {symbolic});
-    df4 = matlabFunction(df4, 'Vars', {symbolic});
-    %d2f1 = matlabFunction(d2f1, 'Vars', {symbolic});
-    %d2f2 = matlabFunction(d2f2, 'Vars', {symbolic});
-    %d2f3 = matlabFunction(d2f3, 'Vars', {symbolic});
-    %d2f4 = matlabFunction(d2f4, 'Vars', {symbolic});
+    crit = matlabFunction(crit, 'Vars', {symbolic});
+    dcrit = matlabFunction(dcrit, 'Vars', {symbolic});
+    %d2crit = matlabFunction(d2crit, 'Vars', {symbolic});
+    
+    function [s,g] = criterion2(param)
+       s = crit(param);
+       g = dcrit(param);
+       %h = d2crit(param);
+       drawArm(param, link_length, armHandle);
+    end
     
     initDraw(obstacles);
-    options = optimoptions('fmincon', 'SpecifyConstraintGradient', true);
-    [params,fval,exitflag,output] = fmincon(@criterion, params,[],[],[],[],lb,ub,@constraint2, options);
+    options = optimoptions('fmincon', 'SpecifyObjectiveGradient', true);
+    [params,fval,exitflag,output] = fmincon(@criterion2, params,[],[],[],[],lb,ub,@constraints, options);
     r = params(:,1);
     p = params(:,2);
     y = params(:,3);
-    
-    function [ineq, eq, dineq, deq] = constraint2(param)
-        [ineq,eq] = constraints(param);
-        dineq = [];
-        %d2ineq = [];
-        deq = [df1(param)'; df2(param)'; df3(param)'; df4(param)';]';
-        %        deq = [df1(param)'; df2(param)'; df3(param)'; df4(param)';]';
-        %d2eq = [d2f1(param); d2f2(param); d2f3(param); d2f4(param);];
-    end
 
     sympref('HeavisideAtOrigin',oldHeavisideParam);
 end

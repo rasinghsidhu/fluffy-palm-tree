@@ -17,7 +17,7 @@
            y = obstacles(i,2);
            z = obstacles(i,3);
            r = obstacles(i,4);
-           mesh(sx*r+x,sy*r+y,sz*r+z);
+           mesh(sx*r+x,sy*r+y,sz*r+z,'facecolor', 'none');
        end
        hold off;
     end

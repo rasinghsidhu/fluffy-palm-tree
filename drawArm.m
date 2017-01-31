@@ -21,9 +21,6 @@ function drawArm(params, lengths, armHandle)
         pt = frame * pt;
         q = rot2quat(frame(1:3,1:3));
         set(armHandle, 'XData', lines(:,1), 'YData', lines(:,2), 'ZData', lines(:,3));
-        hold on;
         drawOrientation(gripperQuatHandle, pt(1:3), q);
-        drawOrientation(targetQuatHandle, targetPos, targetQuat);
-        hold off;
         drawnow;
     end

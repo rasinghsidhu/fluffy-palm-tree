@@ -1,6 +1,6 @@
 function [r,p,y] = part4( target, ll, min_roll, max_roll, min_pitch, max_pitch, min_yaw, max_yaw, o )
     global targetPos targetQuat avgRoll avgPitch avgYaw obstacles link_length;
-    global draw;
+    global draw armHandle;
     draw = 0;
     link_length = ll;
     obstacles = o;
@@ -16,13 +16,20 @@ function [r,p,y] = part4( target, ll, min_roll, max_roll, min_pitch, max_pitch, 
     avgYaw = (min_yaw + max_yaw)/2;
     
     opts = optimoptions(@fmincon);
+    opts.MaxFunctionEvaluations = 10000;
     prob = createOptimProblem('fmincon','objective', @criterion, ...
         'x0', params, 'lb', lb, 'ub', ub, 'nonlcon', @constraints, ...
         'options', opts);
     ms = MultiStart('Display', 'iter', 'UseParallel', false);
-    [params,f, flagg, outptg, manyminsg] = run(ms,prob,10);
+    [params,f, flagg, outptg, manyminsg] = run(ms,prob,20);
     
-    drawArm(params, link_length);
+    drawArm(params, link_length, armHandle);
+    hold on;
+    colors = ['b' 'r' 'g' 'm'];
+    for i = 2:min([4 numel(manyminsg)])
+       drawArm(manyminsg(i).X, link_length, initArmHandle(colors(i)));
+    end
+    hold off;
     
     
     r = params(:,1);
