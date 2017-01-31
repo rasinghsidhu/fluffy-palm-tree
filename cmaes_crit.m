@@ -14,9 +14,12 @@ function score = cmaes_crit(paramVec)
        dist = 0;
        for i = 1:size(obstacles,1)
           obstacle = obstacles(i,:);
-          dist = dist + sum(obstacle_dist(pts, obstacle(1:3)').^-1)./size(link_length,2);
+          dists = obstacle_dist(pts, obstacle(1:3)');
+          distsOff = dists - ones(size(dists))*obstacle(4);
+          distsOff = sum(distsOff(distsOff < 0).^2);
+          dist = dist + distsOff*10 + -.1*sum(dists)./size(link_length,2);
        end
-       
+       quatdiff = rotquatdist(frame(1:3,1:3), targetQuat);
        diff = pos - targetPos;
-       score = dist * 1 + bounds_prox * 1 + norm(diff) * 5 + rotquatdist(frame(1:3,1:3), targetQuat) * 5; 
+       score = dist * 1 + bounds_prox * 1 + norm(diff) * 5 + quatdiff* 10; 
     end

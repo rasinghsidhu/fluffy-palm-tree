@@ -1,5 +1,7 @@
 function [r,p,y] = part4( target, ll, min_roll, max_roll, min_pitch, max_pitch, min_yaw, max_yaw, o )
     global targetPos targetQuat avgRoll avgPitch avgYaw obstacles link_length;
+    global draw;
+    draw = 0;
     link_length = ll;
     obstacles = o;
     params = randn(size(link_length,2),3);%zeros(size(link_length,2),3);
@@ -18,7 +20,9 @@ function [r,p,y] = part4( target, ll, min_roll, max_roll, min_pitch, max_pitch, 
         'x0', params, 'lb', lb, 'ub', ub, 'nonlcon', @constraints, ...
         'options', opts);
     ms = MultiStart('Display', 'iter', 'UseParallel', false);
-    [x,f] = run(ms,prob,8);
+    [params,f, flagg, outptg, manyminsg] = run(ms,prob,10);
+    
+    drawArm(params, link_length);
     
     
     r = params(:,1);

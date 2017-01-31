@@ -17,8 +17,10 @@ function [r,p,y] = part3( target, ll, min_roll, max_roll, min_pitch, max_pitch, 
     opts = cmaes;
     opts.LBounds = lb;
     opts.UBounds = ub;
+    opts.MaxIter = 500;
     [params, fmin, ceval, stopflag, out, bestever] = cmaes('cmaes_crit', params, pi/2, opts);
     params = reshape(params, numel(params)/3, 3);
+    drawArm(params, link_length);
     r = params(:,1);
     p = params(:,2);
     y = params(:,3);

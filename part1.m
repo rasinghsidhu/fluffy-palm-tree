@@ -14,6 +14,8 @@ function [r, p, y] = part1( target, link_lengths, min_roll, max_roll, min_pitch,
     % obstacles: A Mx4 matrix where each row is [ x y z radius ] of a sphere
     %    obstacle. M obstacles.
     global targetPos targetQuat avgRoll avgPitch avgYaw obstacles link_length;
+    global draw;
+    draw = 1;
     obstacles = obstacle;
     link_length = link_lengths;
     params = randn(size(link_length,2),3);%zeros(size(link_length,2),3);
@@ -26,7 +28,9 @@ function [r, p, y] = part1( target, link_lengths, min_roll, max_roll, min_pitch,
     avgPitch = (min_pitch + max_pitch)/2;
     avgYaw = (min_yaw + max_yaw)/2;
     initDraw(obstacles);
-    [params,fval,exitflag,output] = fmincon(@criterion, params,[],[],[],[],lb,ub,@constraints)
+    options = optimoptions('fmincon');
+    options.MaxFunctionEvaluations = 10000;
+    [params,fval,exitflag,output] = fmincon(@criterion, params,[],[],[],[],lb,ub,@constraints, options)
     r = params(:,1);
     p = params(:,2);
     y = params(:,3);

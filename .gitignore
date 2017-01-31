@@ -5,3 +5,5 @@
 *.dat
 #matlab var files
 *.mat
+
+other

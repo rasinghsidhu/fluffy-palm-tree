@@ -1,8 +1,9 @@
 function score = criterion(param)
-    global avgRoll avgPitch avgYaw obstacles link_length;
+    global avgRoll avgPitch avgYaw obstacles link_length armHandle;
+    global draw;
        [pos,frame,pts] = fk(param, link_length);
-       if(not(isa(param,'sym')))
-        drawArm(param, link_length);
+       if(not(isa(param,'sym')) && draw)
+        drawArm(param, link_length,armHandle);
        end
        bounds_prox = sum(abs(param(:,1)-avgRoll'));
        bounds_prox = bounds_prox + sum(abs(param(:,2)-avgPitch'));
@@ -14,5 +15,5 @@ function score = criterion(param)
           dist = dist + sum(obstacle_dist(pts, obstacle(1:3)').^-1)./size(link_length,2);
        end
        
-       score = dist * .1 + bounds_prox * .8;
+       score = dist * 1.5 + bounds_prox * .3;
     end
