@@ -29,6 +29,7 @@ function [r, p, y] = part1( target, link_lengths, min_roll, max_roll, min_pitch,
     avgYaw = (min_yaw + max_yaw)/2;
     initDraw(obstacles);
     options = optimoptions('fmincon');
+    options.Algorithm = 'active-set';
     options.MaxFunctionEvaluations = 10000;
     [params,fval,exitflag,output] = fmincon(@criterion, params,[],[],[],[],lb,ub,@constraints, options)
     r = params(:,1);

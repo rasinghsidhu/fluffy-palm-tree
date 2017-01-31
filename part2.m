@@ -19,7 +19,6 @@ global targetPos targetQuat avgRoll avgPitch avgYaw obstacles link_length armHan
     link_length = ll;
     obstacles = o;
     params = randn(size(link_length,2),3);%zeros(size(link_length,2),3);
-    oldHeavisideParam = sympref('HeavisideAtOrigin',1);
     targetPos = target(1:3);
     targetQuat = target(4:7);
     targetQuat = targetQuat./norm(targetQuat);
@@ -30,28 +29,27 @@ global targetPos targetQuat avgRoll avgPitch avgYaw obstacles link_length armHan
     avgYaw = (min_yaw + max_yaw)/2;
     
     symbolic = sym('p', size(params));
-    
+    initDraw(obstacles);
+    options = optimoptions('fmincon', 'SpecifyObjectiveGradient', true);
+    options.MaxFunctionEvaluations = 10000;
     crit = criterion(symbolic);
     dcrit = gradient(crit, symbolic(:));
-    %d2crit = hessian(crit, symbolic(:));
+    d2crit = hessian(crit, symbolic(:));
     
     crit = matlabFunction(crit, 'Vars', {symbolic});
     dcrit = matlabFunction(dcrit, 'Vars', {symbolic});
-    %d2crit = matlabFunction(d2crit, 'Vars', {symbolic});
+    d2crit = matlabFunction(d2crit, 'Vars', {symbolic});
     
     function [s,g] = criterion2(param)
        s = crit(param);
        g = dcrit(param);
-       %h = d2crit(param);
+       h = d2crit(param);
        drawArm(param, link_length, armHandle);
     end
     
-    initDraw(obstacles);
-    options = optimoptions('fmincon', 'SpecifyObjectiveGradient', true);
-    [params,fval,exitflag,output] = fmincon(@criterion2, params,[],[],[],[],lb,ub,@constraints, options);
+    
+    [params,fval,exitflag,output] = fmincon(@criterion2, params,[],[],[],[],lb,ub,@constraints, options)
     r = params(:,1);
     p = params(:,2);
     y = params(:,3);
-
-    sympref('HeavisideAtOrigin',oldHeavisideParam);
 end

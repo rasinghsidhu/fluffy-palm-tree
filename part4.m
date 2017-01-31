@@ -16,7 +16,7 @@ function [r,p,y] = part4( target, ll, min_roll, max_roll, min_pitch, max_pitch, 
     avgYaw = (min_yaw + max_yaw)/2;
     
     opts = optimoptions(@fmincon);
-    opts.MaxFunctionEvaluations = 10000;
+    opts.MaxFunctionEvaluations = 5000;
     prob = createOptimProblem('fmincon','objective', @criterion, ...
         'x0', params, 'lb', lb, 'ub', ub, 'nonlcon', @constraints, ...
         'options', opts);
