@@ -19,6 +19,8 @@ Figure 2. Arm crawls around obstacle, Part 1
 
 # Forward Kinematics
 
+Forward Kinematics are created simply by recursively generating frames for each joint that are parameterized by the r,p,y of all joints before it. This simply boils down to generating a rotation matrix and translation matrix which transforms the current frame into the next joints frame.
+
 # Choosing Criteria
 
 My criteria is a function of 3 separate metrics that I am optimizing over.
