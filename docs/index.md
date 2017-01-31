@@ -6,6 +6,8 @@ layout: page
 title: Writeup
 ---
 
+[Download Source Code Here](https://github.com/rasinghsidhu/fluffy-palm-tree/archive/v1.tar.gz)
+
 ![Multiple solutions][multi-solutions]
 Figure 1. Multiple solutions generated for Part 4
 
